@@ -62,7 +62,6 @@ class GeTuiService implements PushInterface
         $this->gt_appsecret = $config['gt_appsecret'];
         $this->gt_package = $config['gt_package'];
         $this->gt_mastersecret = $config['gt_mastersecret'];
-        var_dump($config);
         return $this;
     }
 
