@@ -29,13 +29,13 @@ class PushTest extends TestCase
                 'client' => 'client_1',
             ],
             3 => [
-                'deviceid' => 'bf4200ff65f9a0dc1e79e3468b99edbb',
+                'deviceid' => '454ebd43c24aa91e0b670be890552b62',
                 'client' => 'client_3',
             ]
         ];
         try {
 //            $deviceId = 'bf4200ff65f9a0dc1e79e3468b99edbb';
-            $key = 0;
+            $key = 3;
             $deviceId = $client[$key]['deviceid'];
             $app =  $client[$key]['client'];
             $title = '噪音好大啊，啊，啊，啊啊，'; // 标题
@@ -53,6 +53,7 @@ class PushTest extends TestCase
 
             $Message = [
                 "title" => $title,
+                "url" => 'https://www.baidu.com/index.php',
                 "content" => $content,
                 "push" => $push,
                 "event" => $event,
@@ -60,7 +61,7 @@ class PushTest extends TestCase
                 "data" => $data,
             ];
 //            $getuiResponse =Getui::push($deviceId, $data);
-            $getuiResponse = $this->instance->toClient($app)->push($deviceId, $Message);
+            $getuiResponse = $this->instance->toClient($app)->push($deviceId, $Message,false);
 //            $getuiResponse = $this->instance->pushToApp( $data);
             echo json_encode($getuiResponse);
 //            $this->assertContains('ok',$getuiResponse,'不成功');

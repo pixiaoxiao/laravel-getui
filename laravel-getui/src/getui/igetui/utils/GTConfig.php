@@ -9,7 +9,6 @@ class GTConfig
 {
 
 
-
     public static function isPushSingleBatchAsync()
     {
         return "true" == GTConfig::getProperty("gexin_pushSingleBatch_needAsync", null, "false");

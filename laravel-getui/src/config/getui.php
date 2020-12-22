@@ -25,14 +25,21 @@ return [
             'gt_domainurl' => 'http://sdk.open.api.igexin.com/apiex.htm',
         ],
         'client_3' => [
-            'gt_appid' => 'IC4DNfYqX07BdA09mi0be4',
-            'gt_appkey' => 'oLjfEmGCOh6InCyB6uZ498',
-            'gt_appsecret' => 'aKMLyeXLCc8hFpjcuf8gW8',
-            'gt_mastersecret' => 'R9YcCruHbkAHGe13mfKeQ5',
-            'gt_package' => 'wnjsj.woniujie.net',
+            'gt_appid' => 'fFz61ykceoAoC62epwnnc',
+            'gt_appkey' => '9QiBRiutr28djOTYmdRFs4',
+            'gt_appsecret' => 'eoqiuwnnIq75nrbKGKzfj4',
+            'gt_mastersecret' => 'qvBOoUbEkl7eOExAvm3LF8',
+            'gt_package' => 'com.woniujie.pp',
             'gt_domainurl' => 'http://sdk.open.api.igexin.com/apiex.htm',
         ],
-
+        'client_4' => [
+            'gt_appid' => 'IC4DNfYqX07BdA09mi0be4',
+            'gt_appkey' => 'oLjfEmGCOh6InCyB6uZ498',
+            'gt_appsecret' => 'xtKXAD8PjW5oH6Lcq5pAU8',
+            'gt_mastersecret' => 'hEJ3m4SFdT7dzWrImg30Q8',
+            'gt_package' => 'com.woniujie.pp',
+            'gt_domainurl' => 'http://sdk.open.api.igexin.com/apiex.htm',
+        ],
         // other client_3   ......
     ],
     'production' => [

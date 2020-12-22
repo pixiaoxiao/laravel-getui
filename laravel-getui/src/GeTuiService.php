@@ -62,6 +62,7 @@ class GeTuiService implements PushInterface
         $this->gt_appsecret = $config['gt_appsecret'];
         $this->gt_package = $config['gt_package'];
         $this->gt_mastersecret = $config['gt_mastersecret'];
+        var_dump($config);
         return $this;
     }
 
@@ -388,10 +389,10 @@ class GeTuiService implements PushInterface
         $template->set_appkey($this->gt_appkey);//应用appkey
         $template->set_transmissionType(1);//透传消息类型，自动打开应用
         $template->set_transmissionContent($transContent);//透传内容
-        //$template->set_duration(BEGINTIME,ENDTIME); //设置ANDROID客户端在此时间区间内展示消息
+//        $template->set_duration(BEGINTIME,ENDTIME); //设置ANDROID客户端在此时间区间内展示消息
         $intent = "intent:#Intent;action=android.intent.action.oppopush;launchFlags=0x14000000;component={$this->gt_package}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.title={$title};S.content={$content};S.payload={$transContent};end";
         //兼容使用厂商通道传输
-        $notify = new IGtNotify();
+        $notify = new \IGtNotify();
         $notify->set_title($title);
         $notify->set_content($content);
         $notify->set_intent($intent);
@@ -436,7 +437,7 @@ class GeTuiService implements PushInterface
         $template->set_isRing(true);//是否响铃
         $template->set_isVibrate(true);//是否震动
         $template->set_isClearable(true);//通知栏是否可清除
-        //$template->set_duration(BEGINTIME,ENDTIME); //设置ANDROID客户端在此时间区间内展示消息
+//        $template->set_duration(date('Y-m-d H:i:s'),date('Y-m-d H:i:s',strtotime("+1 day"))); //设置ANDROID客户端在此时间区间内展示消息
         return $template;
     }
 
