@@ -1,2 +1,3 @@
 /laravel-getui/vendor/
 .idea/
+composer.lock
