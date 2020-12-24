@@ -20,6 +20,7 @@ class GeTuiService implements PushInterface
     protected $gt_appid;
     protected $gt_appkey;
     protected $gt_appsecret;
+    protected $gt_package;
     protected $gt_mastersecret;
 
     /**
