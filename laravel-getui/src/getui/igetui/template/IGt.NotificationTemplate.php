@@ -157,7 +157,45 @@ class IGtNotificationTemplate extends IGtBaseTemplate {
 	function  set_transmissionContent($transmissionContent) {
 		$this->transmissionContent = $transmissionContent;
 	}
-	
+
+    function set3rdNotifyInfo($notify) {
+        if ($notify->get_title() == null || $notify -> get_content() == null) {
+            throw new Exception("notify title or content cannot be null");
+        }
+
+        $notifyInfo = new NotifyInfo();
+        $notifyInfo -> set_title($notify -> get_title());
+        $notifyInfo -> set_content($notify -> get_content());
+
+        //不指定类型，只发简单通知 ,php 中 空串、false、0、null的值都是相等的，type的枚举值都是大于等于0的
+        if($notify -> get_type() > -1){
+            $notifyInfo ->set_type($notify -> get_type());
+            if($notify -> get_payload() != null){
+                $notifyInfo -> set_payload($notify -> get_payload());
+            }
+
+            if($notify -> get_intent() != null){
+                if(strlen($notify -> get_intent()) > GTConfig::getNotifyIntentLimit()){
+                    throw new Exception("intent size overlimit " . GTConfig::getNotifyIntentLimit());
+                }
+                //不符合intent的格式要求
+                if(!preg_match(self::pattern,$notify -> get_intent())){
+                    throw new Exception("intent format err,should start with \"intent:#Intent;\",end \"with ;end\"  ");
+                }
+
+                $notifyInfo -> set_intent($notify -> get_intent());
+            }
+
+            if($notify -> get_url() != null){
+                $notifyInfo ->set_url($notify -> get_url());
+            }
+        }
+
+        $pushInfo = $this-> get_pushInfo();
+        $pushInfo -> set_notifyInfo($notifyInfo);
+        $pushInfo -> set_validNotify(true);
+    }
+
 	function  set_notifyStyle($notifyStyle) {
 		if($notifyStyle != 1){
 			$this->notifyStyle = 0;

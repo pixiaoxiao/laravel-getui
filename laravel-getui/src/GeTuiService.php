@@ -316,7 +316,8 @@ class GeTuiService implements PushInterface
 //        }
 
         if ($isNotice) {
-            return $this->IGtNotificationTemplateDemo($content, $title, $transContent);
+//            return $this->IGtNotificationTemplateDemo($content, $title, $transContent);
+            return $this->IGtStartActivityTemplateDemo($content, $title, $transContent);
         }
         return $this->IGtTransmissionTemplateDemo($content, $title, $transContent);
     }
@@ -378,7 +379,31 @@ class GeTuiService implements PushInterface
         //$template->set_duration(BEGINTIME,ENDTIME); //设置ANDROID客户端在此时间区间内展示消息
         return $template;
     }
+    //
+    function IGtStartActivityTemplateDemo($content, $title, $transContent){
 
+        try {
+            $template = new \IGtStartActivityTemplate();
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+//        intent:#Intent;action=com.duowan.pushsdk.getui.CKLICK_NOTIFYMESSAGE;package=com.example.yypushsrvsdktest;component=com.example.yypushsrvsdktest/com.yy.pushsvc.impl.PushGTActivity;S.payload=abcdtest;end
+//        $intent = "intent:#Intent;action=com.duowan.pushsdk.getui.CKLICK_NOTIFYMESSAGE;launchFlags=0x14000000;component={$this->gt_package}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.payload={$transContent};end";
+        $intent = "intent:#Intent;action=android.intent.action.oppopush;launchFlags=0x14000000;component={$this->gt_package}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.title={$title};S.content={$content};S.payload={$transContent};end";
+        $template->set_appId($this->gt_appid);//应用appid
+        $template->set_appkey($this->gt_appkey);//应用appkey
+        $template->set_intent($intent);
+        $template->set_title($title);//通知栏标题
+        $template->set_text($content);//通知栏内容
+//        $template->set_logo("");//通知栏logo
+//        $template->set_logoURL("http://*");
+        $template->set_isRing(true);//是否响铃
+        $template->set_isVibrate(true);//是否震动
+        $template->set_isClearable(true);//通知栏是否可清除
+//        $template->set_duration("2019-10-14 08:00:00","2019-10-14 09:00:00");
+//        $template->set_notifyId(0);
+        return $template;
+    }
 
     //透传模板
     function IGtTransmissionTemplateDemo($content, $title, $transContent)

@@ -10,6 +10,7 @@ namespace ShaoZeMing\GeTui\Test;
 require_once dirname(__FILE__) . '/../src/getui/IGt.Push.php';
 
 use PHPUnit\Framework\TestCase;
+use ShaoZeMing\GeTui\Facade\GeTui;
 use ShaoZeMing\GeTui\GeTuiService;
 
 
@@ -21,11 +22,13 @@ class PushTest extends TestCase
     public function testPush()
     {
         $this->instance = new GeTuiService();
+//        $this->instance = GeTui::;
 //        var_dump($this->instance);
         $client = [
             0 => [
-                'deviceid' => '3e3c03d161dd0ab8651df19e7b2b6e65',
-//                'deviceid' => 'd36e539cfa33005947a83e4d61bd6ea7',
+//                'deviceid' => '22ea1bf2c898308109e8baf3f09e6185',
+                'deviceid' => 'ae76ee3fac63f6886ae0284e0b27f9f2',
+//                'deviceid' => '3e3c03d161dd0ab8651df19e7b2b6e65',
                 'client' => 'client_1',
             ],
             3 => [
@@ -38,30 +41,34 @@ class PushTest extends TestCase
             $key = 3;
             $deviceId = $client[$key]['deviceid'];
             $app =  $client[$key]['client'];
-            $title = '噪音好大啊，啊，啊，啊啊，'; // 标题
-            $content = '你好呀您负责的的工单已经追加元';
-            // 推送类型（外推：outer、内推：inner、智能推送：smart）
-            $push = "smart";
-            // 事件名称（APP根据此参数决定执行哪些功能）
-            $event = "";
-            // 内推时，是否给用户展示提示信息（比如强制用户退出就不会展示提示信息）
-            $silent = false;
-            // 推送数据，附加的业务数据
-            $data = [
-                'tip_id' => 9,
-            ];
-
+//            $getuiResponse =Getui::push($deviceId, $data);
+            $message = '{
+                "title":"您收到一条新的资讯分享！",
+                "deviceid":"ae76ee3fac63f6886ae0284e0b27f9f2",
+                "client":"client_1",
+                "data":{
+                    "tip_id":559,
+                "title":"您收到一条新的资讯分享！",
+                "content":"您收到一条新的资讯分享！",
+                "is_ring":false,
+                "is_vibrate":false
+                }
+            }';
+            $message = json_decode($message,true);
+            $data = $message['data'] ?? '';
+            $push = 'smart';
             $Message = [
-                "title" => $title,
-                "url" => 'https://www.baidu.com/index.php',
-                "content" => $content,
+                "title" => isset($data['title']) ? $data['title'] : '',
+                "content" => isset($data['content']) ? $data['content'] : '',
                 "push" => $push,
-                "event" => $event,
-                "silent" => $silent,
+                "event" => '',
+                "silent" => '',
+                "is_ring" => isset($data['is_ring']) ? $data['is_ring'] : 1,
+                "is_vibrate" => isset($data['is_vibrate']) ? $data['is_vibrate'] : 1,
                 "data" => $data,
             ];
-//            $getuiResponse =Getui::push($deviceId, $data);
-            $getuiResponse = $this->instance->toClient($app)->push($deviceId, $Message,false);
+
+            $getuiResponse = $this->instance->toClient($app)->push($deviceId, $Message);
 //            $getuiResponse = $this->instance->pushToApp( $data);
             echo json_encode($getuiResponse);
 //            $this->assertContains('ok',$getuiResponse,'不成功');
