@@ -11,7 +11,7 @@
 ## 安装
 
 ```shell
-$ composer require shaozeming/laravel-getui -v
+$ composer require pixiaoxiao/laravel-getui -v
 ```
 ### Laravel
 

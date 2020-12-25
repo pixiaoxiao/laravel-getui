@@ -32,7 +32,8 @@ class PushTest extends TestCase
                 'client' => 'client_1',
             ],
             2 => [
-                'deviceid' => '454ebd43c24aa91e0b670be890552b62',
+                'deviceid' => '37367d5104559087c0e4dec7b3d6717a',
+//                'deviceid' => '454ebd43c24aa91e0b670be890552b62',
                 'client' => 'client_2',
             ],
             3 => [
@@ -51,7 +52,7 @@ class PushTest extends TestCase
                 "deviceid":"ae76ee3fac63f6886ae0284e0b27f9f2",
                 "client":"client_1",
                 "data":{
-                    "tip_id":559,
+                "tip_id":559,
                 "title":"您收到一条新的资讯分享！",
                 "content":"您收到一条新的资讯分享！",
                 "is_ring":false,
