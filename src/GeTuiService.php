@@ -390,7 +390,7 @@ class GeTuiService implements PushInterface
         }
 //        intent:#Intent;action=com.duowan.pushsdk.getui.CKLICK_NOTIFYMESSAGE;package=com.example.yypushsrvsdktest;component=com.example.yypushsrvsdktest/com.yy.pushsvc.impl.PushGTActivity;S.payload=abcdtest;end
 //        $intent = "intent:#Intent;action=com.duowan.pushsdk.getui.CKLICK_NOTIFYMESSAGE;launchFlags=0x14000000;component={$this->gt_package}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.payload={$transContent};end";
-        $intent = "intent:#Intent;action=android.intent.action.oppopush;launchFlags=0x14000000;component={$this->gt_package}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.title={$title};S.content={$content};S.payload={$transContent};end";
+        $intent = "intent:#Intent;action=com.duowan.pushsdk.getui.CKLICK_NOTIFYMESSAGE;launchFlags=0x14000000;component={$this->gt_package}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.title={$title};S.content={$content};S.payload={$transContent};end";
         $template->set_appId($this->gt_appid);//应用appid
         $template->set_appkey($this->gt_appkey);//应用appkey
         $template->set_intent($intent);

@@ -31,6 +31,10 @@ class PushTest extends TestCase
 //                'deviceid' => '3e3c03d161dd0ab8651df19e7b2b6e65',
                 'client' => 'client_1',
             ],
+            2 => [
+                'deviceid' => '454ebd43c24aa91e0b670be890552b62',
+                'client' => 'client_2',
+            ],
             3 => [
                 'deviceid' => '454ebd43c24aa91e0b670be890552b62',
                 'client' => 'client_3',
