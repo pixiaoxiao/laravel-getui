@@ -282,6 +282,25 @@ class IGtBaseTemplate
         }
         return -1;
     }
+    function setBlackThirdparty(...$thirdparry){
+        $numargs = count($thirdparry);
+        if ($numargs > 0){
+            $pushInfo = $this->get_pushInfo();
+            for ($i = 0; $i < $numargs; $i++) {
+                $pushInfo->set_blackThirdparty($i, $thirdparry[$i]);
+            }
+        }
+    }
 
 
+}
+
+class Thirdparty
+{
+    const HW = 'HW';
+    const XM = 'XM';
+    const VV = 'VV';
+    const MZ = 'MZ';
+    const FCM = 'FCM';
+    const OP = 'OP';
 }

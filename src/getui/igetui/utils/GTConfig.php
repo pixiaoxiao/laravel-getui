@@ -9,6 +9,7 @@ class GTConfig
 {
 
 
+
     public static function isPushSingleBatchAsync()
     {
         return "true" == GTConfig::getProperty("gexin_pushSingleBatch_needAsync", null, "false");
@@ -96,8 +97,9 @@ class GTConfig
 			else
 			{
 				$hosts = array("http://sdk.open.api.igexin.com/serviceex","http://sdk.open.api.gepush.com/serviceex",
-								"http://sdk.open.api.getui.net/serviceex","http://sdk1.open.api.igexin.com/serviceex",
-								"http://sdk2.open.api.igexin.com/serviceex","http://sdk3.open.api.igexin.com/serviceex");
+								"http://sdk.open.api.getui.net/serviceex");
+//                $hosts = array("http://127.0.0.1:8006/serviceex");
+
 			}
         }
 		else
@@ -158,6 +160,11 @@ class GTConfig
 
     public static function getSDKVersion()
     {
-        return "4.1.0.0";
+        return "4.1.3.0";
+    }
+
+    public static function isNeedOSAsigned()
+    {
+        return "true" == GTConfig::getProperty("GETUI_ISNEEDOSASINGED", null, "false");
     }
 }

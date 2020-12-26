@@ -398,11 +398,18 @@ class GeTuiService implements PushInterface
         $template->set_text($content);//通知栏内容
 //        $template->set_logo("");//通知栏logo
 //        $template->set_logoURL("http://*");
-        $template->set_isRing(true);//是否响铃
-        $template->set_isVibrate(true);//是否震动
+        $rule = json_decode($transContent,true);
+        $isRing = isset($rule['is_ring'])?$rule['is_ring']:true;
+        $isVibrate = isset($rule['is_vibrate'])?$rule['is_vibrate']:true;
+//        $template->set_isRing($isRing);//是否响铃
+//        $template->set_isVibrate($isVibrate);//是否震动
+         $template->set_isRing($isRing);//是否响铃
+        $template->set_isVibrate($isVibrate);//是否震动
+//        $template->set_channel("set_channel");
+//        $template->set_channelLevel(3);
         $template->set_isClearable(true);//通知栏是否可清除
 //        $template->set_duration("2019-10-14 08:00:00","2019-10-14 09:00:00");
-//        $template->set_notifyId(0);
+        $template->set_notifyId(123456543);
         return $template;
     }
 
@@ -459,8 +466,13 @@ class GeTuiService implements PushInterface
         $template->set_title($title);//通知栏标题
         $template->set_text($content);//通知栏内容
         $template->set_logo("");//通知栏logo
-        $template->set_isRing(true);//是否响铃
-        $template->set_isVibrate(true);//是否震动
+        $rule = json_decode($transContent,true);
+        $isRing = isset($rule['is_ring'])?$rule['is_ring']:true;
+        $isVibrate = isset($rule['is_vibrate'])?$rule['is_vibrate']:true;
+        var_dump($isRing);
+        var_dump($isVibrate);
+        $template->set_isRing($isRing);//是否响铃
+        $template->set_isVibrate($isVibrate);//是否震动
         $template->set_isClearable(true);//通知栏是否可清除
 //        $template->set_duration(date('Y-m-d H:i:s'),date('Y-m-d H:i:s',strtotime("+1 day"))); //设置ANDROID客户端在此时间区间内展示消息
         return $template;
