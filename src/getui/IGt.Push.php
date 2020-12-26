@@ -1,7 +1,4 @@
 <?php
-/**
- * VERSION 3.3.2.1
- */
 header("Content-Type: text/html; charset=utf-8");
 require_once(dirname(__FILE__) . '/' . 'protobuf/pb_message.php');
 require_once(dirname(__FILE__) . '/' . 'igetui/IGt.Req.php');
@@ -29,12 +26,14 @@ Class IGeTui
     var $appkey; //第三方 标识
     var $masterSecret; //第三方 密钥
     var $format = "json"; //默认为 json 格式
-    var $host ="";
+    var $host = '';
     var $needDetails = false;
     static $appkeyUrlList = array();
     var $domainUrlList =  array();
     var $useSSL = NULL; //是否使用https连接 以该标志为准
     var $authToken;
+    var $isInitOSDomain = false;
+    var $isAssigned = false;
 
     public function __construct($domainUrl, $appkey, $masterSecret, $ssl = NULL)
     {
@@ -49,34 +48,50 @@ Class IGeTui
 
         $this->useSSL = ($ssl == NULL ? false : $ssl);
 
-
         if ($domainUrl == NULL || strlen($domainUrl) == 0)
         {
             $this->domainUrlList =  GTConfig::getDefaultDomainUrl($this->useSSL);
         }
         else
         {
+            if (GTConfig::isNeedOSAsigned()){
+                $this->isAssigned = true;
+            }
             $this->domainUrlList = array($domainUrl);
         }
-        $this->initOSDomain(null);
+        try {
+            $this->initOSDomain(null);
+        } catch (Exception $e) {
+            echo  $e->getMessage();
+        }
     }
-    
+
+    //初始化$appkeyUrlList，向os获取当前appkey的请求地址，以及最快域名
     private function initOSDomain($hosts)
     {
-        if($hosts == null || count($hosts) == 0)
-        {
-            $hosts = isset(IGeTui::$appkeyUrlList[$this->appkey])?IGeTui::$appkeyUrlList[$this->appkey]:null;
-            if($hosts == null || count($hosts) == 0)
-            {
-                $hosts = $this->getOSPushDomainUrlList($this->domainUrlList,$this->appkey);
+        if ($this->isInitOSDomain == true){
+            return null;
+        }else {
+            $this->isInitOSDomain = true;
+        }
+        try {
+            if ($hosts == null || count($hosts) == 0) {
+                if ($this->isAssigned){
+                    $this->host = $this->domainUrlList[0];
+                    return $this->host;
+                }
+                $hosts = isset(IGeTui::$appkeyUrlList[$this->appkey]) ? IGeTui::$appkeyUrlList[$this->appkey] : null;
+                if ($hosts == null || count($hosts) == 0) {
+                    $hosts = $this->getOSPushDomainUrlList($this->domainUrlList, $this->appkey);
+                    IGeTui::$appkeyUrlList[$this->appkey] = $hosts;
+                }
+            } else {
                 IGeTui::$appkeyUrlList[$this->appkey] = $hosts;
             }
+            $this->host = ApiUrlRespectUtils::getFastest($this->appkey, $hosts);
+        } finally {
+            $this->isInitOSDomain = false;
         }
-        else
-        {
-            IGeTui::$appkeyUrlList[$this->appkey] = $hosts;
-        }
-        $this->host = ApiUrlRespectUtils::getFastest($this->appkey, $hosts);
         return $this->host;
     }
 
@@ -113,35 +128,43 @@ Class IGeTui
     function httpPostJSON($url,$data,$gzip=false)
     {
         $data['version'] = GTConfig::getSDKVersion();
-
-
         $data['authToken'] = $this->authToken;
         if($url == null){
             $url = $this->host;
         }
-        $rep = HttpManager::httpPostJson($url, $data, $gzip);
-        if($rep != null)
-        {
-            if ( 'sign_error' == $rep['result']) {
-                try
-                {
-                    if ($this->connect())
-                    {
-
+        try {
+            $rep = HttpManager::httpPostJson($url, $data, $gzip);
+        } catch (GtException $e) {
+            unset(IGeTui::$appkeyUrlList[$this->appkey]);
+            $this->initOSDomain(null);
+            throw new Exception("连接异常",null, $e);
+        }
+        if ($rep != null) {
+            if ('sign_error' == $rep['result']) {
+                try {
+                    if ($this->connect()) {
                         $data['authToken'] = $this->authToken;
                         $rep = HttpManager::httpPostJson($url, $data, $gzip);
-
                     }
+                } catch (GtException $e) {
+                    unset(IGeTui::$appkeyUrlList[$this->appkey]);
+                    $this->initOSDomain(null);
+                    throw new Exception("连接异常", null, $e);
+                } catch (Exception $e) {
+                    throw new Exception("连接异常" . null, $e);
                 }
-                catch (Exception $e)
-                {
-                    throw new Exception("连接异常".$e);
+            } else if ('domain_error' == $rep['result']) {
+                if (empty($rep["osList"])){
+                    throw new Exception("连接异常");
                 }
-            }
-            else if('domain_error' == $rep['result'])
-            {
-                $this->initOSDomain(isset($rep["osList"])?$rep["osList"]:null);
-                $rep = HttpManager::httpPostJson($url, $data, $gzip);
+                $this->initOSDomain(isset($rep["osList"]) ? $rep["osList"] : null);
+                try {
+                    $rep = HttpManager::httpPostJson($url, $data, $gzip);
+                } catch (RequestException $e) {
+                    unset(IGeTui::$appkeyUrlList[$this->appkey]);
+                    $this->initOSDomain(null);
+                    throw new Exception("连接异常", null, $e);
+                }
             }
         }
         return $rep;
@@ -154,6 +177,7 @@ Class IGeTui
         $sign = md5($this->appkey . $timeStamp . $this->masterSecret);
         //
         $params = array();
+
         $params["action"] = "connect";
         $params["appkey"] = $this->appkey;
         $params["timeStamp"] = $timeStamp;
@@ -189,7 +213,7 @@ Class IGeTui
     {
         if($requestId == null || trim($requestId) == "")
         {
-            $requestId = LangUtils::randomUUID();
+            $requestId = uniqid();
         }
         $params = $this->getSingleMessagePostData($message, $target, $requestId);
         return $this->httpPostJSON($this->host,$params);
@@ -691,7 +715,7 @@ Class IGeTui
             return $this->get_result("MsgTypeError");
         }
         if($requestId == null  || trim($requestId) == "") {
-            $requestId = LangUtils::randomUUID();
+            $requestId = uniqid();
         }
 
         $params = array();

@@ -52,7 +52,7 @@ class IGtBatch
 
     public function submit()
     {
-        $requestId = LangUtils::randomUUID();
+        $requestId = uniqid();
         $data = array();
         $data["appkey"]=$this->APPKEY;
         $data["serialize"] = "pb";
